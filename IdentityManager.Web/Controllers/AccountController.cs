@@ -82,10 +82,14 @@ namespace IdentityManager.Web.Controllers
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if(user != null)
                 {
-                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
+                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, true);
                     if(result.Succeeded)
                     {
                         return LocalRedirect(returnUrl);
+                    }
+                    else if(result.IsLockedOut)
+                    {
+                        return View("Lockout");
                     }
                     else
                     {

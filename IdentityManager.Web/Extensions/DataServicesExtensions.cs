@@ -16,8 +16,14 @@ namespace IdentityManager.Web.Extensions
                 opt.UseSqlServer(config.GetConnectionString("DefaultConnection")) 
             );
 
-            services.AddIdentity<AppUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<AppUser, IdentityRole>(opt => {
+                opt.Password.RequiredLength = 6;
+                opt.Password.RequireDigit = true;
+                opt.Password.RequireLowercase = true;
+                opt.Password.RequireUppercase = true;
+                opt.Lockout.MaxFailedAccessAttempts = 5;
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.UpgradePasswordSecurity().UseArgon2<AppUser>();
 
