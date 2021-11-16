@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityManager.Web.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -22,6 +23,7 @@ namespace IdentityManager.Web
         
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDataServices(_config);
             services.AddControllersWithViews();
         }
 
