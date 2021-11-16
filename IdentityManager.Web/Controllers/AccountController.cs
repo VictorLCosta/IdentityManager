@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using IdentityManager.Web.Entities;
 using IdentityManager.Web.Models;
@@ -106,6 +105,18 @@ namespace IdentityManager.Web.Controllers
 
         [HttpPost]
         public async Task<IActionResult> LogOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
