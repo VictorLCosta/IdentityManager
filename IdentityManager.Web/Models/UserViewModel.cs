@@ -5,7 +5,7 @@ namespace IdentityManager.Web.Models
 {
     public class UserViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Por favor, informe o nome")]
         public string Name { get; set; }
 
         [Required]
@@ -17,6 +17,7 @@ namespace IdentityManager.Web.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [Required(ErrorMessage = "Por favor, confirme a senha")]
         [Compare(nameof(Password), ErrorMessage = "As senhas não estão iguais")]
         [DataType(DataType.Password)]
         public int ConfirmPassword { get; set; }

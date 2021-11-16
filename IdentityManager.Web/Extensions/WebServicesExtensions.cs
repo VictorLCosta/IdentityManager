@@ -11,7 +11,7 @@ namespace IdentityManager.Web.Extensions
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();;
 
             return services;
         }
