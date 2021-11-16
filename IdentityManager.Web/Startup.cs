@@ -24,7 +24,7 @@ namespace IdentityManager.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDataServices(_config);
-            services.AddControllersWithViews();
+            services.AddWebServices(_config);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
