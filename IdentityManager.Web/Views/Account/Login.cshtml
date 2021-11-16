@@ -5,7 +5,7 @@
 
 <div class="account">
     <div class="bg-white rounded p-5">
-        <form asp-action="Login" method="POST">
+        <form asp-action="Login" asp-route-returnurl='@ViewData["ReturnUrl"]' method="POST">
             <h3 class="mb-4">Login</h3>
             <div class="form-group">
                 <input type="text" asp-for="Email" class="form-control" placeholder="Email">

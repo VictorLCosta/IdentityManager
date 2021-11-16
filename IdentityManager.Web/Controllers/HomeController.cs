@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using IdentityManager.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IdentityManager.Web.Controllers
 {
@@ -23,6 +24,7 @@ namespace IdentityManager.Web.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();

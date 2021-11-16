@@ -23,16 +23,21 @@ namespace IdentityManager.Web.Controllers
             return View();
         }
 
-        public IActionResult Register()
+        public IActionResult Register(string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             var model = new UserViewModel();
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(UserViewModel model)
+        public async Task<IActionResult> Register(UserViewModel model, string returnUrl)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+            returnUrl = returnUrl ?? Url.Content("/");
+
             if(!ModelState.IsValid)
             {
                 return View(model);
@@ -44,7 +49,7 @@ namespace IdentityManager.Web.Controllers
             if(result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(returnUrl);
             }
             else 
             {
@@ -57,16 +62,21 @@ namespace IdentityManager.Web.Controllers
             }
         }
 
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             var model = new LoginViewModel();
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+            returnUrl = returnUrl ?? Url.Content("/");
+
             if(ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
@@ -75,7 +85,7 @@ namespace IdentityManager.Web.Controllers
                     var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
                     if(result.Succeeded)
                     {
-                        return RedirectToAction("Index", "Home");
+                        return LocalRedirect(returnUrl);
                     }
                     else
                     {
