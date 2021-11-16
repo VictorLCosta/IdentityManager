@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using IdentityManager.Web.Entities;
+using IdentityManager.Web.Services;
 
 namespace IdentityManager.Web.Extensions
 {
@@ -26,6 +27,8 @@ namespace IdentityManager.Web.Extensions
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.UpgradePasswordSecurity().UseArgon2<AppUser>();
+
+            services.AddTransient<IEmailClient, MailKitSender>();
 
             return services;
         }
