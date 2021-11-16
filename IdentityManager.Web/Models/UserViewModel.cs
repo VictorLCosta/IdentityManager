@@ -20,6 +20,6 @@ namespace IdentityManager.Web.Models
         [Required(ErrorMessage = "Por favor, confirme a senha")]
         [Compare(nameof(Password), ErrorMessage = "As senhas não estão iguais")]
         [DataType(DataType.Password)]
-        public int ConfirmPassword { get; set; }
+        public string ConfirmPassword { get; set; }
     }
 }
