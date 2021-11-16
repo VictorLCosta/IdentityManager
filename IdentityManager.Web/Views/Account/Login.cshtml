@@ -15,7 +15,11 @@
                 <input type="password" asp-for="Password" class="form-control" placeholder="Senha">
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                @Html.CheckBoxFor(x => x.RememberMe) Lembrar-se?
+            </div>
             <button type="submit" class="btn btn-block btn-success mt-4">Login</button>
+            <small class="form-text text-center text-muted mt-2">Primeira vez? <a asp-action="Register">Registre-se</a></small>
         </form>
     </div>
 </div>
