@@ -62,5 +62,12 @@ namespace IdentityManager.Web.Controllers
             var model = new LoginViewModel();
             return View(model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> LogOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
