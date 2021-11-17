@@ -5,6 +5,6 @@ namespace IdentityManager.Web.Services
 {
     public interface IEmailClient
     {
-        Task SendEmailAsync(string emailFrom, string emailTo, string subject, string htmlMessage);
+        Task SendEmailAsync(string emailTo, string subject, string htmlMessage);
     }
 }

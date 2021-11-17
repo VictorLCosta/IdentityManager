@@ -24,7 +24,9 @@ namespace IdentityManager.Web.Extensions
                 opt.Password.RequireUppercase = true;
                 opt.Lockout.MaxFailedAccessAttempts = 5;
                 opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            })
+            .AddDefaultTokenProviders()
+            .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.UpgradePasswordSecurity().UseArgon2<AppUser>();
 

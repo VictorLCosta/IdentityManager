@@ -16,7 +16,7 @@ namespace IdentityManager.Web.Services
             _config = config;
         }
 
-        public async Task SendEmailAsync(string emailFrom, string emailTo, string subject, string htmlMessage)
+        public async Task SendEmailAsync(string emailTo, string subject, string htmlMessage)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace IdentityManager.Web.Services
                 var password = _config.GetValue<string>("Email:Password");
 
                 var message = new MimeMessage();
-                message.From.Add(MailboxAddress.Parse(emailFrom));
+                message.From.Add(MailboxAddress.Parse(userName));
                 message.To.Add(MailboxAddress.Parse(emailTo));
 
                 message.Subject = subject;
@@ -34,7 +34,7 @@ namespace IdentityManager.Web.Services
                     Text = htmlMessage
                 };
 
-                await client.ConnectAsync("smtp.gmail.com", 587, true);
+                await client.ConnectAsync("smtp.gmail.com", 465, true);
                 await client.AuthenticateAsync(userName, password);
                 await client.SendAsync(message);
                 await client.DisconnectAsync(true);

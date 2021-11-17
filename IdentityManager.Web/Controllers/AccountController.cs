@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using IdentityManager.Web.Entities;
 using IdentityManager.Web.Models;
+using IdentityManager.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +11,13 @@ namespace IdentityManager.Web.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IEmailClient _sender;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailClient sender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _sender = sender;
         }
 
         public IActionResult Index()
@@ -118,8 +121,68 @@ namespace IdentityManager.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            if(ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if(user != null)
+                {
+                    var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code }, HttpContext.Request.Scheme);
+
+                    await _sender.SendEmailAsync(
+                        user.Email, 
+                        "Redefinir senha - IdentityManager",
+                        $"Redefina sua senha clicando aqui: <a href=\"{callbackUrl}\">link</a>"
+                    );
+
+                    return RedirectToAction("ForgotPasswordConfirmation");
+                }
+
+                return View();
+            }
+
+            return View();
+        }
+
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        public IActionResult ResetPassword(string code = null)
+        {
+            return code == null ? View("Error") : View(); 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if(user != null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+                    if(result.Succeeded)
+                    {
+                        return RedirectToAction("ForgotPasswordConfirmation");
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+
+                        return View(model);
+                    }
+                }
+
+                return RedirectToAction("ForgotPasswordConfirmation");
+            }
+
+            return View(model);
         }
     }
 }
