@@ -56,7 +56,7 @@ namespace IdentityManager.Web.Controllers
                 await _sender.SendEmailAsync(
                     model.Email, 
                     "Confirme sua conta - IdentityManager", 
-                    $"Olá, confirme que este e-mail é seu clicando no link abaixo <br><a href=\"{callbackurl}\"></a>"
+                    $"Olá, confirme que este e-mail é seu clicando no link abaixo <br><a href=\"{callbackurl}\">link</a>"
                 );
 
                 await _signInManager.SignInAsync(user, false);
@@ -192,6 +192,25 @@ namespace IdentityManager.Web.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if(userId == null || code == null)
+            {
+                return View("Error");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if(user != null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, code);
+                return View(result.Succeeded ? "ConfirmEmail" : "Error");
+            }
+
+            return View("Error");
         }
     }
 }
