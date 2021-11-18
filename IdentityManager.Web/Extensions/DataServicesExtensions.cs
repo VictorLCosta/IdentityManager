@@ -19,7 +19,7 @@ namespace IdentityManager.Web.Extensions
 
             services.AddIdentity<AppUser, IdentityRole>(opt => {
                 opt.Password.RequiredLength = 6;
-                opt.Password.RequireDigit = true;
+                opt.Password.RequireDigit = false;
                 opt.Password.RequireLowercase = true;
                 opt.Password.RequireUppercase = true;
                 opt.Lockout.MaxFailedAccessAttempts = 5;
@@ -27,6 +27,11 @@ namespace IdentityManager.Web.Extensions
             })
             .AddDefaultTokenProviders()
             .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddAuthentication().AddFacebook(opt => {
+                opt.AppId = config.GetValue<string>("OAuth:Facebook:AppId");
+                opt.AppSecret = config.GetValue<string>("OAuth:Facebook:AppSecret");
+            });
 
             services.UpgradePasswordSecurity().UseArgon2<AppUser>();
 
