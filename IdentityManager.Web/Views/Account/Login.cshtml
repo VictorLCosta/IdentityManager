@@ -1,3 +1,6 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> _signInManager
+
 @model LoginViewModel
 @{
     ViewData["Title"] = "Login";
@@ -20,9 +23,26 @@
                 @Html.CheckBoxFor(x => x.RememberMe) Lembrar-se?
             </div>
             <button type="submit" class="btn btn-block btn-success mt-4">Login</button>
-            <small class="form-text text-center text-muted mt-2">Primeira vez? <a asp-action="Register">Registre-se</a></small>
+            <small class="form-text text-center text-muted mt-2">Primeira vez? <a
+                    asp-action="Register">Registre-se</a></small>
         </form>
     </div>
+    @{
+        var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
+        var loginProviders = schemes.ToList();
+    }
+    @if (loginProviders.Count > 0)
+    {
+        <section class="text-center ml-5">
+            <h4 class="text-light mb-3">Use outro serviço para fazer login</h4>
+            <form asp-action="ExternalLogin" asp-controller="Account" asp-route-returnUrl='ViewData["ReturnUrl"]' method="POST" role="form">
+                @foreach (var provider in loginProviders)
+                {
+                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name">@provider.Name</button>
+                }
+            </form>
+        </section>
+    }
 </div>
 
 @section Scripts {
